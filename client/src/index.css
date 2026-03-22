@@ -179,7 +179,7 @@ tbody tr:hover td { background: var(--bg); }
 
 /* ── Page header ── */
 .page-header     { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; }
-.page-header-left { }
+.page-header-left{/* reserved for future styles */}
 .page-title      { font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
 .page-subtitle   { font-size: 13.5px; color: var(--text-secondary); margin-top: 3px; }
 
@@ -262,4 +262,75 @@ tbody tr:hover td { background: var(--bg); }
   .page-content { padding: 16px; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .kanban { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE FIX — Complete responsive overrides
+   ═══════════════════════════════════════════════════════ */
+
+/* Backdrop element — hidden desktop, shown mobile */
+.mobile-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(16,24,40,.45);
+  z-index: 199;
+  animation: fadeIn .2s ease;
+}
+
+@media (max-width: 768px) {
+
+  /* Sidebar: full-width fixed overlay */
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    width: var(--sidebar-w) !important;
+    transform: translateX(-100%) !important;
+    transition: transform .25s cubic-bezier(.4,0,.2,1) !important;
+    z-index: 200 !important;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 0 0 40px rgba(16,24,40,.2) !important;
+  }
+
+  /* Never show collapsed sidebar on mobile */
+  .sidebar.collapsed {
+    width: var(--sidebar-w) !important;
+  }
+
+  /* Backdrop visible on mobile */
+  .mobile-backdrop { display: block !important; }
+
+  /* Hide search on mobile */
+  .topbar-search { display: none !important; }
+
+  /* Topbar padding tighter */
+  .topbar { padding: 0 12px !important; gap: 8px !important; }
+
+  /* Page content */
+  .page-content { padding: 14px 12px !important; }
+
+  /* Grids single column */
+  .grid-2, .grid-3 { grid-template-columns: 1fr !important; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .kanban { grid-template-columns: 1fr !important; }
+
+  /* Tables scroll */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Modal full width */
+  .modal { max-width: calc(100vw - 24px) !important; }
+
+  /* Breadcrumb — hide ManufactureOS prefix */
+  .breadcrumb > span:first-child,
+  .breadcrumb > span:nth-child(2) { display: none; }
+}
+
+@media (min-width: 769px) {
+  /* On desktop, backdrop never shows */
+  .mobile-backdrop { display: none !important; }
 }
