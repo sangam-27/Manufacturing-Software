@@ -22,19 +22,24 @@ export const fetchMe = createAsyncThunk('auth/me', async (_, { rejectWithValue }
 });
 
 // ── Slice ────────────────────────────────────────────────────────────────────
+const storedToken = localStorage.getItem('token');
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user:    null,
-    token:   localStorage.getItem('token') || null,
-    loading: false,
-    error:   null,
-    initialized: false,
+    user:        null,
+    token:       storedToken || null,
+    loading:     false,
+    error:       null,
+    // ✅ Fix: agar token hi nahi hai localStorage mein toh
+    //    immediately initialized=true — koi wait nahi karna
+    initialized: !storedToken,
   },
   reducers: {
     logout(state) {
-      state.user  = null;
-      state.token = null;
+      state.user        = null;
+      state.token       = null;
+      state.initialized = true;   // ✅ logout ke baad bhi initialized raho
       localStorage.removeItem('token');
     },
     clearError(state) { state.error = null; },
@@ -42,14 +47,28 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // login
-      .addCase(loginUser.pending,   (s) => { s.loading = true;  s.error = null; })
-      .addCase(loginUser.fulfilled, (s, a) => { s.loading = false; s.user = a.payload.user; s.token = a.payload.token; })
+      // ── login ──────────────────────────────────────────────────────────────
+      .addCase(loginUser.pending,   (s) => { s.loading = true; s.error = null; })
+      .addCase(loginUser.fulfilled, (s, a) => {
+        s.loading     = false;
+        s.user        = a.payload.user;
+        s.token       = a.payload.token;
+        s.initialized = true;   // ✅ THE FIX: login ke turant baad initialized=true
+      })
       .addCase(loginUser.rejected,  (s, a) => { s.loading = false; s.error = a.payload; })
-      // fetchMe
+      // ── fetchMe (token restore on page reload) ─────────────────────────────
       .addCase(fetchMe.pending,     (s) => { s.loading = true; })
-      .addCase(fetchMe.fulfilled,   (s, a) => { s.loading = false; s.user = a.payload; s.initialized = true; })
-      .addCase(fetchMe.rejected,    (s) => { s.loading = false; s.initialized = true; s.token = null; localStorage.removeItem('token'); });
+      .addCase(fetchMe.fulfilled,   (s, a) => {
+        s.loading     = false;
+        s.user        = a.payload;
+        s.initialized = true;
+      })
+      .addCase(fetchMe.rejected,    (s) => {
+        s.loading     = false;
+        s.initialized = true;
+        s.token       = null;
+        localStorage.removeItem('token');
+      });
   },
 });
 
