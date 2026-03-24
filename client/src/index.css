@@ -179,7 +179,7 @@ tbody tr:hover td { background: var(--bg); }
 
 /* ── Page header ── */
 .page-header     { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; }
-.page-header-left{/* reserved for future styles */}
+.page-header-left { }
 .page-title      { font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
 .page-subtitle   { font-size: 13.5px; color: var(--text-secondary); margin-top: 3px; }
 
@@ -333,4 +333,35 @@ tbody tr:hover td { background: var(--bg); }
 @media (min-width: 769px) {
   /* On desktop, backdrop never shows */
   .mobile-backdrop { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   KPI CARD MOBILE FIX
+   ═══════════════════════════════════════════════════════ */
+
+/* Remove old absolute icon — now handled inline in JSX */
+.kpi-icon {
+  position: static !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* KPI card — safe padding, no overflow on mobile */
+.kpi-card {
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+
+/* KPI value — shrink font on very small screens */
+@media (max-width: 400px) {
+  .kpi-value { font-size: 22px !important; }
+  .kpi-label { font-size: 10px !important; }
+  .kpi-card  { padding: 12px !important; }
+}
+
+/* KPI change text — wrap instead of overflow */
+.kpi-change {
+  flex-wrap: wrap;
+  word-break: break-word;
 }

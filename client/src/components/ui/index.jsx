@@ -169,14 +169,36 @@ export const ConfirmDialog = ({ isOpen, onClose, onConfirm, title = 'Confirm Act
 
 // ── KPI Card ──────────────────────────────────────────────────────────────────
 export const KpiCard = ({ label, value, change, changeDir = 'up', icon, iconColor, iconBg, loading }) => (
-  <div className="kpi-card">
-    {icon && (
-      <div className="kpi-icon" style={{ background: iconBg || 'var(--primary-light)', color: iconColor || 'var(--primary)' }}>
-        <Icon name={icon} size={18} />
-      </div>
-    )}
-    <div className="kpi-label">{label}</div>
-    {loading ? <Skeleton height={28} width="60%" /> : <div className="kpi-value">{value}</div>}
+  <div className="kpi-card" style={{ overflow: 'hidden' }}>
+    {/* Top row: label + icon side by side — no absolute positioning */}
+    <div style={{
+      display: 'flex',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      gap: 8,
+      marginBottom: 10,
+    }}>
+      <div className="kpi-label" style={{ margin: 0, flex: 1, minWidth: 0 }}>{label}</div>
+      {icon && (
+        <div style={{
+          width: 34,
+          height: 34,
+          borderRadius: 'var(--radius-md)',
+          background: iconBg || 'var(--primary-light)',
+          color: iconColor || 'var(--primary)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          <Icon name={icon} size={16} />
+        </div>
+      )}
+    </div>
+    {loading
+      ? <Skeleton height={26} width="60%" />
+      : <div className="kpi-value">{value}</div>
+    }
     {change && (
       <div className={`kpi-change ${changeDir}`}>
         <Icon name={changeDir === 'up' ? 'arrow_up' : 'arrow_down'} size={11} />
