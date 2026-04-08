@@ -64,7 +64,8 @@ app.use('/api/shifts',          shiftRoutes);
 app.use('/api/notifications',   notificationRoutes);
 app.use('/api/reports',         reportRoutes);
 
-app.get('/api/health', (_,res) => res.json({ status:'OK', modules:14, time: new Date() }));
+// app.get('/api/health', (_,res) => res.json({ status:'OK', modules:14, time: new Date() }));
+app.get('/api/health', (_, res) => res.send('OK'));
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
